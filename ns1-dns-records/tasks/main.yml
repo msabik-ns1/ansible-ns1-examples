@@ -1,0 +1,39 @@
+---
+# tasks file for ns1-dns-records
+- name: Creating DNS record
+  delegate_to: 127.0.0.1 # we don't want to run API from the target host
+  uri:
+    url: "https://api.nsone.net/v1/zones/{{ zone }}/{{ record }}/{{ record_type }}"
+    method: PUT
+    headers:
+      X-NSONE-Key: "{{ ns1_api_key }}"
+    body_format: json
+    body:
+      zone: "{{ zone }}"
+      domain: "{{ record }}"
+      type: "{{ record_type }}"
+      answers:
+        - answer:
+          - "{{ answer }}"
+
+- name: Updating Exisging DNS record (answers)
+  delegate_to: 127.0.0.1 # we don't want to run API from the target host
+  uri:
+    url: "https://api.nsone.net/v1/zones/{{ zone }}/{{ record }}/{{ record_type }}"
+    method: POST
+    headers:
+      X-NSONE-Key: "{{ ns1_api_key }}"
+    body_format: json
+    body:
+      answers:
+        - answer:
+          - "{{ answer2 }}"
+
+- name: Deleting DNS record
+  delegate_to: 127.0.0.1 # we don't want to run API from the target host
+  uri:
+    url: "https://api.nsone.net/v1/zones/{{ zone }}/{{ record }}/{{ record_type }}"
+    method: DELETE
+    headers:
+      X-NSONE-Key: "{{ ns1_api_key }}"
+

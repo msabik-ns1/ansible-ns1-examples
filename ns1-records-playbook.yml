@@ -1,0 +1,16 @@
+---
+- hosts: all
+  ignore_unreachable: yes # Only for debugging, remove if hosts are reachable
+
+  vars:
+    zone: domain.ansible # As an example we set the zone var here and this playbook will serve to manage one dedicated zone
+    record: "{{ inventory_hostname }}" # We use inventory_hostname as FQDN required by NS1 API
+  vars_prompt: # We use prompt to provide NS1_API_KEY in a secure way.
+    - name: "ns1_api_key"
+      prompt: "NS1 API key to manage DNS records"
+      private: yes
+  environment:
+    NSONE_API_KEY: "{{ ns1_api_key }}"
+
+  roles:
+    - ns1-dns-records # role containing CRUD NS1 API DNS record operations
