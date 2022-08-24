@@ -16,6 +16,23 @@
         - answer:
           - "{{ answer }}"
 
+- name: Creating PTR record # sub-task to create PTR record for A
+  delegate_to: 127.0.0.1 # we don't want to run API from the target host
+  uri:
+    url: "https://api.nsone.net/v1/zones/{{ ptr_zone }}/{{ ansible_host | ansible.utils.ipaddr('revdns') | regex_replace('\\.$', '') }}/PTR"
+    method: PUT
+    headers:
+      X-NSONE-Key: "{{ ns1_api_key }}"
+    body_format: json
+    body:
+      zone: "{{ ptr_zone }}"
+      domain: "{{ ansible_host | ansible.utils.ipaddr('revdns') | regex_replace('\\.$', '') }}" # utils.ipaddr will convert ip into in-addr.arpa format, we need to delete trailing dot
+      type: PTR
+      answers:
+        - answer:
+            - "{{ inventory_hostname }}"
+  when: record_type == "A"
+
 - name: Updating Exisging DNS record (answers)
   delegate_to: 127.0.0.1 # we don't want to run API from the target host
   uri:

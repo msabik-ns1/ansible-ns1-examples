@@ -5,3 +5,4 @@ all:
       record_type: A         # for dns: authoritative,recurssive,hybrid | for dhcp: standalone, ha
       answer: 192.168.10.10                       # A record will point to this IP
       answer2: 10.120.250.50                      # We can have multiple answers, in this case we use 'answer2' to UPDATE a record
+      ptr_zone: 168.192.in-addr.arpa              # Reverse DNS zone where we want to create associated PTR record
